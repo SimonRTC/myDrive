@@ -22,7 +22,7 @@ const fileSchema = new mongoose.Schema({
         type: {
             owner: {
                 type: String,
-                required: true
+                required: false
             },
             parent: {
                 type: String,

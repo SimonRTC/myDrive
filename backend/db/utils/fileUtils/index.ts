@@ -66,10 +66,10 @@ class DbUtil {
         return file;
     }
 
-    getFileInfo = async(fileID: string, userID: string) => {
+    getFileInfo = async(fileID: string, userID: string|null) => {
 
         const file = await conn.db.collection("fs.files")
-            .findOne({"metadata.owner": new ObjectID(userID), "_id": new ObjectID(fileID)}) as FileInterface;
+            .findOne({"metadata.owner": (userID !== null? new ObjectID(userID): null), "_id": new ObjectID(fileID)}) as FileInterface;
 
         return file;
     }

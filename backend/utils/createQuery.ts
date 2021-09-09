@@ -2,7 +2,7 @@ import s3 from "../db/s3"
 import { ObjectID } from "mongodb"
 
 export interface QueryInterface {
-    "metadata.owner": ObjectID,
+    "metadata.owner": ObjectID | null,
     "metadata.parent"?: string,
     filename?: string | RegExp | {
         $lt?: string,
@@ -15,9 +15,9 @@ export interface QueryInterface {
     "metadata.personalFile"?: boolean | null
 }
 
-const createQuery = (owner: string, parent: string, sortBy: string, startAt: number, startAtDate: number, searchQuery: string | RegExp, s3Enabled: boolean,startAtName: string, storageType: string, folderSearch: boolean) => {
+const createQuery = (owner: string|null, parent: string, sortBy: string, startAt: number, startAtDate: number, searchQuery: string | RegExp, s3Enabled: boolean,startAtName: string, storageType: string, folderSearch: boolean) => {
 
-    let query: QueryInterface = {"metadata.owner": new ObjectID(owner)}
+    let query: QueryInterface = {"metadata.owner": (owner !== null? new ObjectID(owner): null)}
 
     if (searchQuery !== "") {
 

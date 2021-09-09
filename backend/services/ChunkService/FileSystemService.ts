@@ -152,7 +152,11 @@ class FileSystemService implements ChunkInterface {
 
     downloadFile = async(user: UserInterface, fileID: string, res: Response) => {
 
-        const currentFile: FileInterface = await dbUtilsFile.getFileInfo(fileID, user._id);
+        let currentFile: FileInterface = await dbUtilsFile.getFileInfo(fileID, user._id);
+        
+        if (!currentFile) {
+            currentFile = await dbUtilsFile.getFileInfo(fileID, null);
+        }
 
         if (!currentFile) throw new NotFoundError("Download File Not Found");
 
@@ -181,7 +185,10 @@ class FileSystemService implements ChunkInterface {
 
     getFileReadStream = async(user: UserInterface, fileID: string) => {
 
-        const currentFile: FileInterface = await dbUtilsFile.getFileInfo(fileID, user._id);
+        let currentFile: FileInterface = await dbUtilsFile.getFileInfo(fileID, user._id);
+        if (!currentFile) {
+            currentFile = await dbUtilsFile.getFileInfo(fileID, null);
+        }
 
         if (!currentFile) throw new NotFoundError("Download File Not Found");
 
@@ -235,7 +242,10 @@ class FileSystemService implements ChunkInterface {
 
         const userID = user._id;
 
-        const file: FileInterface = await dbUtilsFile.getFileInfo(fileID, userID);
+        let file: FileInterface = await dbUtilsFile.getFileInfo(fileID, userID);
+        if (!file) {
+            file = await dbUtilsFile.getFileInfo(fileID, null);
+        }
 
         if (!file) throw new NotFoundError("File Thumbnail Not Found");
 
@@ -272,7 +282,11 @@ class FileSystemService implements ChunkInterface {
         // Is safari going to be the next internet explorer?
 
         const userID = user._id;
-        const currentFile: FileInterface = await dbUtilsFile.getFileInfo(fileID, userID);
+        
+        let currentFile: FileInterface = await dbUtilsFile.getFileInfo(fileID, userID);
+        if (!currentFile) {
+            currentFile = await dbUtilsFile.getFileInfo(fileID, null);
+        }
 
         if (!currentFile) throw new NotFoundError("Video File Not Found");
 

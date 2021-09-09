@@ -10,9 +10,11 @@ import DbUtilFolder from "../../db/utils/folderUtils";
 import { UserInterface } from "../../models/user";
 import { FileInterface } from "../../models/file";
 import tempStorage from "../../tempStorage/tempStorage";
+import FolderService from "../FolderService";
 
 const dbUtilsFile = new DbUtilFile();
 const dbUtilsFolder = new DbUtilFolder();
+const folderService = new FolderService();
 
 type userAccessType = {
     _id: string,
@@ -84,6 +86,10 @@ class MongoFileService {
     getFileInfo = async(userID: string, fileID: string) => {
 
         let currentFile = await dbUtilsFile.getFileInfo(fileID, userID)
+
+        if (!currentFile) {
+            currentFile = await dbUtilsFile.getFileInfo(fileID, null);
+        }
     
         if (!currentFile) throw new NotFoundError("Get File Info Not Found Error");
     
@@ -127,7 +133,12 @@ class MongoFileService {
 
     getList = async(user: userAccessType | UserInterface, query: any) => {
 
-        const userID = user._id;
+        let parentFolder = null;
+        try  {
+            parentFolder = (query.parent !== "/"? await folderService.getFolderInfo(null, query.parent): null);
+        } catch (e) {}
+
+        const userID = (parentFolder !== null && parentFolder.owner === null? null: user._id);
 
         let searchQuery = query.search || "";
         const parent = query.parent || "/";
