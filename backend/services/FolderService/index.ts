@@ -29,7 +29,7 @@ class FolderService {
         return folder;
     }
 
-    getFolderInfo = async(userID: string, folderID: string) => {
+    getFolderInfo = async(userID: string|null, folderID: string) => {
 
         let currentFolder = await utilsFolder.getFolderInfo(folderID, userID);
     
@@ -67,7 +67,7 @@ class FolderService {
         return currentFolder;
     }
 
-    getFolderSublist = async(userID: string, folderID: string) => {
+    getFolderSublist = async(userID: string|null, folderID: string) => {
 
         const folder = await utilsFolder.getFolderInfo(folderID, userID);
 
@@ -122,7 +122,9 @@ class FolderService {
 
         if (searchQuery.length === 0) {
 
-            const folderList = await utilsFolder.getFolderListByParent(userID, parent, sortBy, s3Enabled, type, storageType, itemType);
+            let privateFolderList   = await utilsFolder.getFolderListByParent(userID, parent, sortBy, s3Enabled, type, storageType, itemType);
+            let publicFolderList    = await utilsFolder.getPublicFolder(parent, sortBy, s3Enabled, type, storageType, itemType);
+            const folderList        = privateFolderList.concat(publicFolderList);
 
             if (!folderList) throw new NotFoundError("Folder List Not Found Error");
 

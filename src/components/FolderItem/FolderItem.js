@@ -14,7 +14,7 @@ const FolderItem = (props) => {
             <div className="context__menu--wrapper" onClick={props.clickStopPropagation}>
                 <NewContextMenu gridMode={true} folderMode={true} quickItemMode={props.parent !== "/"} contextSelected={props.state.contextSelected} closeContext={props.closeContext} downloadFile={props.downloadFile} file={props} changeEditNameMode={props.changeEditNameMode} closeEditNameMode={props.closeEditNameMode} changeDeleteMode={props.changeDeleteMode} startMovingFile={props.startMoveFolder}/>
             </div>
-            <div class={props._id !== props.selected ? "folders__image" : "folders__image folder__selected"}>
+            <div class={props.owner !== null? props._id !== props.selected ? "folders__image" : "folders__image folder__selected": "folders__image folders__shared"}>
                 <i class="fas fa-folder" aria-hidden={true}></i>
                 {/* <img class="fas fa-folder" src="/assets/foldericon.svg"/> */}
 			</div>
@@ -23,7 +23,7 @@ const FolderItem = (props) => {
 				<ul>
 				    {/* <li>16 files</li>
 					<li class="spacer__folder">•</li> */}
-					<li>{props.drive ? 'Google Drive' : props.personalFolder ? 'Amazon S3' : 'myDrive'}</li>
+					<li>{props.drive ? 'Google Drive' : props.personalFolder ? 'Amazon S3' : 'myDrive'} ({props.owner === null? "Public": "Private"})</li>
 				</ul>
 			</div>
         </div>

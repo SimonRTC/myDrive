@@ -14,7 +14,7 @@ const folderSchema = new mongoose.Schema({
     
     owner: {
         type: String, 
-        required: true
+        required: false
     },
 
     parentList: {
@@ -30,7 +30,7 @@ const folderSchema = new mongoose.Schema({
 export interface FolderInterface extends Document {
     name: string,
     parent: string,
-    owner: string,
+    owner: string|null,
     createdAt: Date,
     updatedAt: Date,
     parentList: string[],

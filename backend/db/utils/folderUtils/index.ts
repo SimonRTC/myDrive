@@ -16,14 +16,42 @@ class DbUtil {
         return folderList;
     }
 
-    getFolderInfo = async(folderID: string, userID: string) => {
-
-        const folder = await Folder.findOne({"owner": userID, "_id": new ObjectID(folderID)}) as FolderInterface;
-
+    getFolderInfo = async(folderID: string, userID: string|null) => {
+        let folder = await Folder.findOne({"owner": userID, "_id": new ObjectID(folderID)}) as FolderInterface;
+        if (folder === null) {
+            folder = await Folder.findOne({"owner": null, "_id": new ObjectID(folderID)}) as FolderInterface;
+        }
         return folder;
     }
 
-    getFolderListByParent = async(userID: string, parent: string, sortBy: string, s3Enabled: boolean, type: string, storageType: string, itemType: string) => {
+    getPublicFolder = async(parent: string, sortBy: string, s3Enabled: boolean, type: string, storageType: string, itemType: string) => {
+
+        let query: any = {"owner": null, "parent": parent};
+
+        if (!s3Enabled) {
+            query = {...query, "personalFolder": null}
+        }
+
+        if (type) {
+            if (type === "mongo") {
+                query = {...query, "personalFolder": null}
+            } else if (type === "s3") {
+                query = {...query, "personalFolder": true}
+            }
+        }
+
+        if (itemType) {
+            if (itemType === "personal") query = {...query, "personalFolder": true}
+            if (itemType === "nonpersonal") query = {...query, "personalFolder": null}
+        }
+
+        const folderList = await Folder.find(query)
+        .sort(sortBy) as FolderInterface[];
+
+        return folderList;
+    }
+
+    getFolderListByParent = async(userID: string|null, parent: string, sortBy: string, s3Enabled: boolean, type: string, storageType: string, itemType: string) => {
 
         let query: any = {"owner": userID, "parent": parent};
 
@@ -50,7 +78,7 @@ class DbUtil {
         return folderList;
     }
 
-    getFolderListBySearch = async(userID: string, searchQuery: string, sortBy: string, type: string, parent: string, storageType: string, folderSearch: boolean, itemType: string, s3Enabled: boolean) => {
+    getFolderListBySearch = async(userID: string|null, searchQuery: string, sortBy: string, type: string, parent: string, storageType: string, folderSearch: boolean, itemType: string, s3Enabled: boolean) => {
 
         let query: any = {"name": searchQuery,"owner": userID};
 

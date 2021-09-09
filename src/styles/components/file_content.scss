@@ -334,6 +334,13 @@
 	}
 }
 
+.folders__shared {
+	
+	&>svg {
+		color: rgb(142, 54, 243);
+	}
+}
+
 .upload__overlay{
 	position: fixed;
 	top:0px;

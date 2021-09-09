@@ -159,7 +159,7 @@ class FolderController {
     
         try {
     
-            const userID = req.user._id;
+            const userID = (req.params.owner !== null? req.user._id: null);
             const folderID = req.params.id;
     
             const folder = await folderService.getFolderInfo(userID, folderID);
@@ -183,7 +183,7 @@ class FolderController {
     
         try {
     
-            const userID = req.user._id;
+            const userID = (req.params.owner !== null? req.user._id: null);
             const folderID = req.query.id as string;
             
             const {folderIDList, folderNameList} = await folderService.getFolderSublist(userID, folderID);
